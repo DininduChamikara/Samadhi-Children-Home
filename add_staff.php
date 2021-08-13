@@ -8,6 +8,12 @@
 
         <body>
 
+         <!-- dinindu test -->
+         <?php if(isset($_GET['error'])): ?>
+            <p><?php echo $_GET['error']; ?></p>
+        <?php endif ?>
+        <!-- dinindu test end-->
+
             <div class="row"><!--row starts-->
 
                 <div class="col-lg-12"><!--col-lg-12 starts-->
@@ -42,7 +48,7 @@
 
                         <div class="panel-body"><!--panel-body starts-->
 
-                            <form id="insert_form" class="form-horizontal" method="POST" ><!-- form-horizantal starts-->
+                            <form id="insert_form" class="form-horizontal" method="POST" enctype="multipart/form-data"><!-- form-horizantal starts-->
 
                                 <div class="form-group"><!--form-group starts-->
 
@@ -183,6 +189,23 @@
                                 </div><!--form-group Ends-->
 
 
+                                <!--Dinindu Add image-->
+
+                                <div class="form-group"><!--form-group starts-->
+
+                                    <label class="col-md-3 control-label">Enter an Image</label>
+
+                                    <div class="col-md-6"><!--col-md-6 starts-->
+
+                                        <input type="file" name="simage" id="simage" class="form-control" required>
+
+                                    </div><!--col-md-6 Ends-->
+
+                                </div><!--form-group Ends-->
+
+                                <!--Dinindu Add image end-->
+
+
                                  <div class="form-group"><!--form-group starts-->
 
                                     <label class="col-md-3 control-label">UserName</label>
@@ -236,7 +259,7 @@
             
             
              <?php
-    if (isset($_POST['addStaff'])) {
+    if (isset($_POST['addStaff']) && isset($_FILES['simage'])) {
 
      $firstname = $_POST['Sfirstname'];
      $lastname = $_POST['Slastname'];
@@ -251,14 +274,48 @@
      $username =$_POST['username'];
      $password = $_POST['password'];
 
-        $insert_staff = "insert into staff (firstname,lastname,name_with_init,bdate,snic,gender,ContactNo,Address,email,post,username,password)"
-                . " values ('$firstname','$lastname','$name_with_init','$bdate','$snic','$gender','$contact','$address','$email','$post','$username','$password')";
+     $img_name = $_FILES['simage']['name'];
+     $img_size = $_FILES['simage']['size'];
+     $tmp_name = $_FILES['simage']['tmp_name'];
+     $error = $_FILES['simage']['error'];
 
-        $run_staff = mysqli_query($Con, $insert_staff);
+     //////////////////
+     if($error === 0){
+        if($img_size > 1024*1024*3){
+            $em = "Sorry, image is too large";
+            
+        }else{
+            $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+            $img_ex_lc = strtolower($img_ex);
 
-        if ($run_staff) {
-            echo "<script> alert('User Added successfully ')</script>";
-            echo "<script> window.open('index.php?viewStaff ','_self')</script>";
+            $allowed_exs = array("jpg", "jpeg", "png");
+
+            if(in_array($img_ex_lc, $allowed_exs)){
+                $new_img_name = uniqid("IMG-", true).'.'.$img_ex_lc;
+                $img_upload_path = 'uploads/'.$new_img_name;
+                move_uploaded_file($tmp_name, $img_upload_path);
+
+               
+                // Insert into database
+                $insert_staff = "insert into staff (firstname,lastname,name_with_init,bdate,snic,gender,ContactNo,Address,email,post,image_url,username,password)"
+                . " values ('$firstname','$lastname','$name_with_init','$bdate','$snic','$gender','$contact','$address','$email','$post','$new_img_name','$username','$password')";
+
+               $run_staff = mysqli_query($Con, $insert_staff);
+           
+               if ($run_staff) {
+                   echo "<script> alert('child Added successfully ')</script>";
+                   echo "<script> window.open('index.php?viewStaff ','_self')</script>";
+               }
+
+
+            }else{
+               $em = "You can't upload files of this type";
+            }
         }
+    }else{
+       $em = "unknown error occurred!";
+    }
+
+   
     }
     ?>
