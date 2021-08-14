@@ -279,43 +279,73 @@
      $tmp_name = $_FILES['simage']['tmp_name'];
      $error = $_FILES['simage']['error'];
 
-     //////////////////
-     if($error === 0){
-        if($img_size > 1024*1024*3){
-            $em = "Sorry, image is too large";
-            
-        }else{
-            $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
-            $img_ex_lc = strtolower($img_ex);
+    if (!preg_match("/^[a-zA-Z-' ]*$/",$firstname)) {
+        echo "<script>alert('Only letters and white space allowed for First Name.')</script>";
+        echo "<script> window.open('index.php?insertStaff ','_self')</script>"; 
 
-            $allowed_exs = array("jpg", "jpeg", "png");
-
-            if(in_array($img_ex_lc, $allowed_exs)){
-                $new_img_name = uniqid("IMG-", true).'.'.$img_ex_lc;
-                $img_upload_path = 'uploads/'.$new_img_name;
-                move_uploaded_file($tmp_name, $img_upload_path);
-
-               
-                // Insert into database
-                $insert_staff = "insert into staff (firstname,lastname,name_with_init,bdate,snic,gender,ContactNo,Address,email,post,image_url,username,password)"
-                . " values ('$firstname','$lastname','$name_with_init','$bdate','$snic','$gender','$contact','$address','$email','$post','$new_img_name','$username','$password')";
-
-               $run_staff = mysqli_query($Con, $insert_staff);
-           
-               if ($run_staff) {
-                   echo "<script> alert('child Added successfully ')</script>";
-                   echo "<script> window.open('index.php?viewStaff ','_self')</script>";
-               }
-
-
-            }else{
-               $em = "You can't upload files of this type";
-            }
-        }
-    }else{
-       $em = "unknown error occurred!";
+    // full name format check
+    }elseif(!preg_match("/^[a-zA-Z-' ]*$/",$lastname)) {
+        echo "<script>alert('Only letters and white space allowed for Last Name')</script>";
+        echo "<script> window.open('index.php?insertStaff ','_self')</script>";       
+    }
+    elseif(!preg_match("/^[a-zA-Z-' . ]*$/",$name_with_init)) {
+        echo "<script>alert('Only letters, dots and white space allowed for Name with Initials')</script>";
+        echo "<script> window.open('index.php?insertStaff ','_self')</script>";       
+    }
+    elseif(!preg_match("/^([0-9]{9}[x|X|v|V]|[0-9]{12})$/",$snic)) {
+        echo "<script>alert('Invalid NIC number.')</script>";
+        echo "<script> window.open('index.php?insertStaff ','_self')</script>";       
+    }
+    elseif(!preg_match("/^(?:7|0|(?:\+94))[0-9]{9,10}$/",$contact)) {
+        echo "<script>alert('Invalid mobile number.')</script>";
+        echo "<script> window.open('index.php?insertStaff ','_self')</script>";       
+    }
+    elseif(!preg_match("/^[^\s@]+@[^\s@]+\.[^\s@]+$/",$email)) {
+        echo "<script>alert('Invalid email')</script>";
+        echo "<script> window.open('index.php?insertStaff ','_self')</script>";       
     }
 
-   
+    else{
+        if($error === 0){
+            if($img_size > 1024*1024*3){
+                $em = "Sorry, image is too large";
+                
+            }else{
+                $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+                $img_ex_lc = strtolower($img_ex);
+    
+                $allowed_exs = array("jpg", "jpeg", "png");
+    
+                if(in_array($img_ex_lc, $allowed_exs)){
+                    $new_img_name = uniqid("IMG-", true).'.'.$img_ex_lc;
+                    $img_upload_path = 'uploads/'.$new_img_name;
+                    move_uploaded_file($tmp_name, $img_upload_path);
+    
+                   
+                    // Insert into database
+                    $insert_staff = "insert into staff (firstname,lastname,name_with_init,bdate,snic,gender,ContactNo,Address,email,post,image_url,username,password)"
+                    . " values ('$firstname','$lastname','$name_with_init','$bdate','$snic','$gender','$contact','$address','$email','$post','$new_img_name','$username','$password')";
+    
+                   $run_staff = mysqli_query($Con, $insert_staff);
+               
+                   if ($run_staff) {
+                       echo "<script> alert('child Added successfully ')</script>";
+                       echo "<script> window.open('index.php?viewStaff ','_self')</script>";
+                   }
+    
+    
+                }else{
+                   $em = "You can't upload files of this type";
+                }
+            }
+
+            echo "<script>alert('$em')</script>";
+
+        }else{
+           $em = "unknown error occurred!";
+        }
+
+    }
+
     }
     ?>
