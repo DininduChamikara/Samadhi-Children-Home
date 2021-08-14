@@ -189,12 +189,12 @@ $gender = $row_pro['gender'];
         // name with initials format check
         if (!preg_match("/^[a-zA-Z-' . ]*$/",$name_with_init)) {
             echo "<script>alert('Only letters, Dots and white space allowed for Name with Initials.')</script>";
-            echo "<script> window.open('index.php?insertChild ','_self')</script>"; 
+            echo "<script> window.open('index.php?editChild=$edit_id','_self')</script>"; 
 
         // full name format check
         }elseif(!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
             echo "<script>alert('Only letters and white space allowed for Full Name')</script>";
-            echo "<script> window.open('index.php?insertChild ','_self')</script>";       
+            echo "<script> window.open('index.php?editChild=$edit_id ','_self')</script>";       
         }
 
         else{
