@@ -102,10 +102,6 @@
                                 </div><!--form-group Ends-->
 
 
-                                
-
-
-
                                  <div class="form-group"><!--form-group starts-->
 
                                     <label class="col-md-3 control-label">Gender</label>
