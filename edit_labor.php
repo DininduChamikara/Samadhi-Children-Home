@@ -18,6 +18,7 @@ $name = $row_pro['name'];
 $contact = $row_pro['contact'];
 $address = $row_pro['address'];
 $gender = $row_pro['gender'];
+$salary = $row_pro['salary'];
 $company = $row_pro['company'];
 $id = $row_pro['laborId'];
 
@@ -161,6 +162,21 @@ $id = $row_pro['laborId'];
                                 </div><!--form-group Ends-->
 
 
+
+                                <div class="form-group"><!--form-group starts-->
+
+                                    <label class="col-md-3 control-label">Salary</label>
+
+                                    <div class="col-md-6"><!--col-md-6 starts-->
+
+                                           <input type="text" name="salary" id="salary" class="form-control" value="<?php echo $salary ?>" required >
+
+                                    </div><!--col-md-6 Ends-->
+
+                                </div><!--form-group Ends-->
+
+
+
                                 <div class="form-group"><!--form-group starts-->
 
                                     <label class="col-md-3 control-label">Name of the hiring company</label>
@@ -216,10 +232,11 @@ $id = $row_pro['laborId'];
      $contact = $_POST['contactNo'];
      $address  =$_POST['address'];
      $gender =$_POST['gender'];
+     $salary = $_POST['salary'];
      $company = $_POST['company'];
     
 
-        $insert_staff = "update labor set name_with_init='$name_with_init', fullname='$fullname', name='$name', contact='$contact', address='$address' ,gender='$gender', company='$company'  where laborId='$id'";
+        $insert_staff = "update labor set name_with_init='$name_with_init', fullname='$fullname', name='$name', contact='$contact', address='$address' ,gender='$gender',salary='$salary', company='$company'  where laborId='$id'";
 
         $run_staff = mysqli_query($Con, $insert_staff);
 

@@ -132,6 +132,20 @@
 
                                 </div><!--form-group Ends-->
 
+
+                                <div class="form-group"><!--form-group starts-->
+
+                                    <label class="col-md-3 control-label">Salary</label>
+
+                                    <div class="col-md-6"><!--col-md-6 starts-->
+
+                                           <input type="text" name="salary" id="salary" class="form-control" required >
+
+                                    </div><!--col-md-6 Ends-->
+
+                                </div><!--form-group Ends-->
+
+
                                 <!--Dinindu Add-->
 
                                 <div class="form-group"><!--form-group starts-->
@@ -183,13 +197,14 @@
      $contact = $_POST['contactNo'];
      $address  =$_POST['address'];
      $gender =$_POST['gender'];
+     $salary = $_POST['salary'];
      $company = $_POST['company'];
 
      
     
 
-        $insert_staff = "insert into labor (name_with_init,fullname,name,contact,address,gender,company)"
-                . " values ('$name_with_init','$fullname','$name','$contact','$address' ,'$gender','$company')";
+        $insert_staff = "insert into labor (name_with_init,fullname,name,contact,address,gender,salary,company)"
+                . " values ('$name_with_init','$fullname','$name','$contact','$address' ,'$gender','$salary','$company')";
 
         $run_staff = mysqli_query($Con, $insert_staff);
 
