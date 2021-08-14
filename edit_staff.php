@@ -75,7 +75,7 @@ $id = $row_pro['staffId'];
 
                         <div class="panel-body"><!--panel-body starts-->
 
-                            <form id="insert_form" class="form-horizontal" method="POST" ><!-- form-horizantal starts-->
+                            <form id="insert_form" class="form-horizontal" method="POST" enctype="multipart/form-data" ><!-- form-horizantal starts-->
 
                                 <div class="form-group"><!--form-group starts-->
 
@@ -216,6 +216,23 @@ $id = $row_pro['staffId'];
                                 </div><!--form-group Ends-->
 
 
+                                <!--Dinindu Add image-->
+
+                                <div class="form-group"><!--form-group starts-->
+
+                                    <label class="col-md-3 control-label">Enter an Image</label>
+
+                                    <div class="col-md-6"><!--col-md-6 starts-->
+
+                                        <input type="file" name="simage" id="simage" class="form-control" required>
+
+                                    </div><!--col-md-6 Ends-->
+
+                                </div><!--form-group Ends-->
+
+                                <!--Dinindu Add image end-->
+
+
                                  <div class="form-group"><!--form-group starts-->
 
                                     <label class="col-md-3 control-label">UserName</label>
@@ -269,7 +286,7 @@ $id = $row_pro['staffId'];
             
             
              <?php
-    if (isset($_POST['editStaff'])) {
+    if (isset($_POST['editStaff']) && isset($_FILES['simage'])) {
 
      $firstname = $_POST['Sfirstname'];
      $lastname = $_POST['Slastname'];
@@ -284,14 +301,58 @@ $id = $row_pro['staffId'];
      $username =$_POST['username'];
      $password = $_POST['password'];
 
-        $insert_staff = "update  staff set firstname='$firstname',lastname='$lastname',name_with_init='$name_with_init',bdate='$bdate',snic='$snic',gender='$gender',ContactNo='$contact',Address='$address',email='$email',post='$post',username='$username',password='$password' where staffId = '$edit_id'";
+     $img_name = $_FILES['simage']['name'];
+     $img_size = $_FILES['simage']['size'];
+     $tmp_name = $_FILES['simage']['tmp_name'];
+     $error = $_FILES['simage']['error'];
+
+     //////////////////////////
+     if($error === 0){
+        // maximum 3MB images
+       if($img_size > 1024*1024*3){
+           $em = "Sorry, image is too large";
+           
+       }else{
+           $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+           $img_ex_lc = strtolower($img_ex);
+
+           $allowed_exs = array("jpg", "jpeg", "png");
+
+           if(in_array($img_ex_lc, $allowed_exs)){
+               $new_img_name = uniqid("IMG-", true).'.'.$img_ex_lc;
+               $img_upload_path = 'uploads/'.$new_img_name;
+               move_uploaded_file($tmp_name, $img_upload_path);
+
+              
+               // Insert into database
+               $insert_staff = "update  staff set firstname='$firstname',lastname='$lastname',name_with_init='$name_with_init',bdate='$bdate',snic='$snic',gender='$gender',ContactNo='$contact',Address='$address',email='$email',post='$post',image_url='$new_img_name',username='$username',password='$password' where staffId = '$edit_id'";
+
+              $run_staff = mysqli_query($Con, $insert_staff);
+          
+              if ($run_staff) {
+                  echo "<script> alert('child Added successfully ')</script>";
+                  echo "<script> window.open('index.php?viewStaff ','_self')</script>";
+              }
+
+
+           }else{
+              $em = "You can't upload files of this type";
+           }
+       }
+   }else{
+      $em = "unknown error occurred!";
+   }
+
+     //////////////////////////
+
+        // $insert_staff = "update  staff set firstname='$firstname',lastname='$lastname',name_with_init='$name_with_init',bdate='$bdate',snic='$snic',gender='$gender',ContactNo='$contact',Address='$address',email='$email',post='$post',username='$username',password='$password' where staffId = '$edit_id'";
                
 
-        $run_staff = mysqli_query($Con, $insert_staff);
+        // $run_staff = mysqli_query($Con, $insert_staff);
 
-        if ($run_staff) {
-            echo "<script> alert('User updated successfully ')</script>";
-            echo "<script> window.open('index.php?viewStaff ','_self')</script>";
-        }
+        // if ($run_staff) {
+        //     echo "<script> alert('User updated successfully ')</script>";
+        //     echo "<script> window.open('index.php?viewStaff ','_self')</script>";
+        // }
     }
     ?>

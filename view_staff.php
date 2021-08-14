@@ -50,6 +50,7 @@
 <th>Contact</th>
 <th>Address</th>
 <th>Username</th>
+<th>Picture</th>
 <th>Edit</th>
 <th>Delete</th>
 </tr>
@@ -71,6 +72,7 @@ while($row_pro=mysqli_fetch_array($run_pro)){
 $name = $row_pro['name_with_init'];
 $contact = $row_pro['ContactNo'];
 $address = $row_pro['Address'];
+$images = $row_pro['image_url'];
 $username = $row_pro['username'];
 $id = $row_pro['staffId'];
 $i++;
@@ -85,6 +87,10 @@ $i++;
 <td><?php echo $contact; ?></td>
 <td><?php echo $address; ?></td>
 <td><?php echo $username; ?></td>
+
+<td width=120px; >
+<img class="center_image" width=100px height=100px src="uploads/<?=$images?>">
+</td>
 
 <td>
 

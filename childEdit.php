@@ -32,6 +32,12 @@ $gender = $row_pro['gender'];
 
         <body>
 
+        <!-- dinindu test -->
+        <?php if(isset($_GET['error'])): ?>
+            <p><?php echo $_GET['error']; ?></p>
+        <?php endif ?>
+        <!-- dinindu test end-->
+
             <div class="row"><!--row starts-->
 
                 <div class="col-lg-12"><!--col-lg-12 starts-->
@@ -66,7 +72,7 @@ $gender = $row_pro['gender'];
 
                         <div class="panel-body"><!--panel-body starts-->
 
-                            <form id="insert_form" class="form-horizontal" method="POST" ><!-- form-horizantal starts-->
+                            <form id="insert_form" class="form-horizontal" method="POST" enctype="multipart/form-data"><!-- form-horizantal starts-->
 
 
                                 <!--Dinindu Add name with initials-->
@@ -179,22 +185,57 @@ $gender = $row_pro['gender'];
             
             
              <?php
-    if (isset($_POST['addchild'])) {
+    if (isset($_POST['addchild']) && isset($_FILES['cimage'])) {
 
      $name_with_init = $_POST['cname_with_init'];
      $name = $_POST['cname'];
      $bdate = $_POST['bdate'];
      $gender =$_POST['gender'];
-    
 
-        $insert_staff = "update childdetails  set name_with_init='$name_with_init', name='$name',birthdate='$bdate',gender='$gender' where id= '$edit_id'";
-             
+     $img_name = $_FILES['cimage']['name'];
+     $img_size = $_FILES['cimage']['size'];
+     $tmp_name = $_FILES['cimage']['tmp_name'];
+     $error = $_FILES['cimage']['error'];
 
-        $run_staff = mysqli_query($Con, $insert_staff);
+     ////////////////
+     if($error === 0){
+         // maximum 3MB images
+        if($img_size > 1024*1024*3){
+            $em = "Sorry, image is too large";
+            
+        }else{
+            $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+            $img_ex_lc = strtolower($img_ex);
 
-        if ($run_staff) {
-            echo "<script> alert('child updated successfully ')</script>";
-            echo "<script> window.open('index.php?viewChild ','_self')</script>";
+            $allowed_exs = array("jpg", "jpeg", "png");
+
+            if(in_array($img_ex_lc, $allowed_exs)){
+                $new_img_name = uniqid("IMG-", true).'.'.$img_ex_lc;
+                $img_upload_path = 'uploads/'.$new_img_name;
+                move_uploaded_file($tmp_name, $img_upload_path);
+
+               
+                // Insert into database
+                $insert_staff = "update childdetails  set name_with_init='$name_with_init', name='$name',birthdate='$bdate',gender='$gender', image_url='$new_img_name' where id= '$edit_id'";
+
+               $run_staff = mysqli_query($Con, $insert_staff);
+           
+               if ($run_staff) {
+                   echo "<script> alert('child Added successfully ')</script>";
+                   echo "<script> window.open('index.php?viewChild ','_self')</script>";
+               }
+
+
+            }else{
+               $em = "You can't upload files of this type";
+            }
         }
+    }else{
+       $em = "unknown error occurred!";
+    }
+
+
+     ////////////////
+    
     }
     ?>

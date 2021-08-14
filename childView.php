@@ -51,6 +51,7 @@
 <th>Gender</th>
 <th>Birth Date</th>
 <th>Age</th>
+<th>Picture</th>
 <th>Edit</th>
 <th>Delete</th>
 </tr>
@@ -72,7 +73,7 @@ while($row_pro=mysqli_fetch_array($run_pro)){
 $name_with_init = $row_pro['name_with_init'];
 $name = $row_pro['name'];
 $bdate = $row_pro['birthdate'];
-
+$images = $row_pro['image_url'];
 $gender = $row_pro['gender'];
 $id = $row_pro['id'];
 $i++;
@@ -89,6 +90,9 @@ $i++;
 <td><?php echo $gender; ?></td>
 <td><?php echo $bdate; ?></td>
 <td><?php echo $age; ?></td>
+<td width=120px; >
+<img class="center_image" width=100px height=100px src="uploads/<?=$images?>">
+</td>
 
 
 <td>
