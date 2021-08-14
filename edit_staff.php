@@ -29,8 +29,6 @@ $id = $row_pro['staffId'];
 
 ?>
 
-
-
 <!DOCTYPE html>
 
     <html>
@@ -40,6 +38,14 @@ $id = $row_pro['staffId'];
         </head>
 
         <body>
+
+
+        <!-- dinindu test -->
+        <?php if(isset($_GET['error'])): ?>
+            <p><?php echo $_GET['error']; ?></p>
+        <?php endif ?>
+        <!-- dinindu test end-->
+
 
             <div class="row"><!--row starts-->
 
@@ -258,9 +264,6 @@ $id = $row_pro['staffId'];
                                 </div><!--form-group Ends-->
 
                                     
-                                
-                                
-                                    
                                     <div class="form-group" ><!-- form-group Starts -->
 
                                         <label class="col-md-3 control-label" ></label>
@@ -307,52 +310,71 @@ $id = $row_pro['staffId'];
      $error = $_FILES['simage']['error'];
 
      //////////////////////////
-     if($error === 0){
-        // maximum 3MB images
-       if($img_size > 1024*1024*3){
-           $em = "Sorry, image is too large";
-           
-       }else{
-           $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
-           $img_ex_lc = strtolower($img_ex);
+     if (!preg_match("/^[a-zA-Z-' ]*$/",$firstname)) {
+        echo "<script>alert('Only letters and white space allowed for First Name.')</script>";
+        echo "<script> window.open('index.php?editStaff=$edit_id ','_self')</script>"; 
 
-           $allowed_exs = array("jpg", "jpeg", "png");
-
-           if(in_array($img_ex_lc, $allowed_exs)){
-               $new_img_name = uniqid("IMG-", true).'.'.$img_ex_lc;
-               $img_upload_path = 'uploads/'.$new_img_name;
-               move_uploaded_file($tmp_name, $img_upload_path);
-
-              
-               // Insert into database
-               $insert_staff = "update  staff set firstname='$firstname',lastname='$lastname',name_with_init='$name_with_init',bdate='$bdate',snic='$snic',gender='$gender',ContactNo='$contact',Address='$address',email='$email',post='$post',image_url='$new_img_name',username='$username',password='$password' where staffId = '$edit_id'";
-
-              $run_staff = mysqli_query($Con, $insert_staff);
-          
-              if ($run_staff) {
-                  echo "<script> alert('child Added successfully ')</script>";
-                  echo "<script> window.open('index.php?viewStaff ','_self')</script>";
-              }
-
-
-           }else{
-              $em = "You can't upload files of this type";
-           }
-       }
-   }else{
-      $em = "unknown error occurred!";
-   }
-
-     //////////////////////////
-
-        // $insert_staff = "update  staff set firstname='$firstname',lastname='$lastname',name_with_init='$name_with_init',bdate='$bdate',snic='$snic',gender='$gender',ContactNo='$contact',Address='$address',email='$email',post='$post',username='$username',password='$password' where staffId = '$edit_id'";
+    }elseif(!preg_match("/^[a-zA-Z-' ]*$/",$lastname)) {
+        echo "<script>alert('Only letters and white space allowed for Last Name')</script>";
+        echo "<script> window.open('index.php?editStaff=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^[a-zA-Z-' . ]*$/",$name_with_init)) {
+        echo "<script>alert('Only letters, dots and white space allowed for Name with Initials')</script>";
+        echo "<script> window.open('index.php?editStaff=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^([0-9]{9}[x|X|v|V]|[0-9]{12})$/",$snic)) {
+        echo "<script>alert('Invalid NIC number.')</script>";
+        echo "<script> window.open('index.php?editStaff=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^(?:7|0|(?:\+94))[0-9]{9,10}$/",$contact)) {
+        echo "<script>alert('Invalid mobile number.')</script>";
+        echo "<script> window.open('index.php?editStaff=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^[^\s@]+@[^\s@]+\.[^\s@]+$/",$email)) {
+        echo "<script>alert('Invalid email')</script>";
+        echo "<script> window.open('index.php?editStaff=$edit_id ','_self')</script>";       
+    }
+    else{
+        if($error === 0){
+            // maximum 3MB images
+           if($img_size > 1024*1024*3){
+               $em = "Sorry, image is too large";
                
+           }else{
+               $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+               $img_ex_lc = strtolower($img_ex);
+    
+               $allowed_exs = array("jpg", "jpeg", "png");
+    
+               if(in_array($img_ex_lc, $allowed_exs)){
+                   $new_img_name = uniqid("IMG-", true).'.'.$img_ex_lc;
+                   $img_upload_path = 'uploads/'.$new_img_name;
+                   move_uploaded_file($tmp_name, $img_upload_path);
+    
+                  
+                   // Insert into database
+                   $insert_staff = "update  staff set firstname='$firstname',lastname='$lastname',name_with_init='$name_with_init',bdate='$bdate',snic='$snic',gender='$gender',ContactNo='$contact',Address='$address',email='$email',post='$post',image_url='$new_img_name',username='$username',password='$password' where staffId = '$edit_id'";
+    
+                  $run_staff = mysqli_query($Con, $insert_staff);
+              
+                  if ($run_staff) {
+                      echo "<script> alert('child Added successfully ')</script>";
+                      echo "<script> window.open('index.php?viewStaff ','_self')</script>";
+                  }
+    
+    
+               }else{
+                  $em = "You can't upload files of this type";
+               }
+           }
 
-        // $run_staff = mysqli_query($Con, $insert_staff);
+           echo "<script>alert('$em')</script>";
 
-        // if ($run_staff) {
-        //     echo "<script> alert('User updated successfully ')</script>";
-        //     echo "<script> window.open('index.php?viewStaff ','_self')</script>";
-        // }
+       }else{
+          $em = "unknown error occurred!";
+       }
+
+    }
+
     }
     ?>

@@ -283,7 +283,6 @@
         echo "<script>alert('Only letters and white space allowed for First Name.')</script>";
         echo "<script> window.open('index.php?insertStaff ','_self')</script>"; 
 
-    // full name format check
     }elseif(!preg_match("/^[a-zA-Z-' ]*$/",$lastname)) {
         echo "<script>alert('Only letters and white space allowed for Last Name')</script>";
         echo "<script> window.open('index.php?insertStaff ','_self')</script>";       
