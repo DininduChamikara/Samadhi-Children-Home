@@ -193,11 +193,6 @@ $id = $row_pro['laborId'];
 
                                 </div><!--form-group Ends-->
                                 
-                                 
-
-                                    
-                                
-                                
                                     
                                     <div class="form-group" ><!-- form-group Starts -->
 
@@ -234,8 +229,29 @@ $id = $row_pro['laborId'];
      $gender =$_POST['gender'];
      $salary = $_POST['salary'];
      $company = $_POST['company'];
-    
 
+     if(!preg_match("/^[a-zA-Z-' . ]*$/",$name_with_init)) {
+        echo "<script>alert('Only letters, dots and white space allowed for Name with Initials')</script>";
+        echo "<script> window.open('index.php?editLabors=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^[a-zA-Z-' ]*$/",$fullname)) {
+        echo "<script>alert('Only letters and white space allowed for Full Name')</script>";
+        echo "<script> window.open('index.php?editLabors=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
+        echo "<script>alert('Only letters and white space allowed for First Name')</script>";
+        echo "<script> window.open('index.php?editLabors=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^(?:7|0|(?:\+94))[0-9]{9,10}$/",$contact)) {
+        echo "<script>alert('Invalid mobile number.')</script>";
+        echo "<script> window.open('index.php?editLabors=$edit_id ','_self')</script>";       
+    }
+    elseif(!preg_match("/^(?!0+(?:\.0+)?$)[0-9]+(?:\.[0-9]+)?$/",$salary)) {
+        echo "<script>alert('Invalid input.')</script>";
+        echo "<script> window.open('index.php?editLabors=$edit_id ','_self')</script>";       
+    }
+
+    else{
         $insert_staff = "update labor set name_with_init='$name_with_init', fullname='$fullname', name='$name', contact='$contact', address='$address' ,gender='$gender',salary='$salary', company='$company'  where laborId='$id'";
 
         $run_staff = mysqli_query($Con, $insert_staff);
@@ -244,5 +260,9 @@ $id = $row_pro['laborId'];
             echo "<script> alert('labor updated successfully ')</script>";
             echo "<script> window.open('index.php?viewLabors ','_self')</script>";
         }
+    }
+    
+
+        
     }
     ?>
